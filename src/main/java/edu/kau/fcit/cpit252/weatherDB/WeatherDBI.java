@@ -25,13 +25,10 @@ public class WeatherDBI implements WeatherCity {
             b = new URIBuilder(API_URL + city);
             URI uri = b.build();
             HttpResponse<String> response = HTTPHelper.sendGet(uri);
-            System.out.println(response.body());
             if (response != null) {
-                return "23c";
-//                wInfo = parseWeatherResponse(response.toString(), WeatherInfo.class);
-//                return wInfo.toString();
+                wInfo = parseWeatherResponse(response.body(), WeatherInfo.class);
+                return wInfo.toString();
             }
-
             return "failed";
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -39,17 +36,18 @@ public class WeatherDBI implements WeatherCity {
         }
 
     }
-
-
     public static WeatherInfo parseWeatherResponse(String responseString, Class<?> elementClass){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode weatherInfoNode = objectMapper.readTree(responseString);
             WeatherInfo wInfo = new WeatherInfo();
-            System.out.println(responseString);
-            wInfo.setTime("weatherInfoNode.get(\"name\").textValue()");
-            wInfo.setTime("weatherInfoNode.get(\"name\").get(\"c\").textValue()");
-            wInfo.setTime("weatherInfoNode.get(\"name\").get(\"c\").textValue()");
+            String dayHour = weatherInfoNode.get("currentConditions").get("dayhour").textValue();
+            int tempC = weatherInfoNode.get("currentConditions").get("temp").get("c").intValue();
+            int tempF = weatherInfoNode.get("currentConditions").get("temp").get("f").intValue();
+
+            wInfo.setTime(dayHour);
+            wInfo.setTempInC(tempC);
+            wInfo.setTempInF(tempF);
 
             return wInfo;
         } catch (JsonProcessingException e) {
@@ -58,3 +56,4 @@ public class WeatherDBI implements WeatherCity {
         }
     }
 }
+
