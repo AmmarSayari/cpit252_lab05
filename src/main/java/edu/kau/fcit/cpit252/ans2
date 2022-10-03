@@ -1,0 +1,4 @@
+Explain how the adapter design pattern binds the client to an interface not a concrete implementation?
+the adapter is to convert what the api have
+use interface so it can be easily manageable and can implement and change the api
+create an interface and the concrete will implement the interface
